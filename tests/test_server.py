@@ -2,6 +2,7 @@ import asyncio
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 
 import httpx
 import pytest
@@ -14,6 +15,13 @@ from mlx_decisions.server import Batcher, create_app
 BODY = {"state": "a", "questions": {"x": {"type": "noul", "instructions": "true?"}}}
 
 
+@dataclass(frozen=True)
+class FakeRow:
+    request: int
+    state: str
+    key: str
+
+
 class FakeEngine:
     model_id = "fake"
 
@@ -21,17 +29,24 @@ class FakeEngine:
         self.batches = []
         self.threads = set()
         self.delay = delay
+        self.prepared_states = []
+        self.executed_rows = []
 
     def prepare(self, requests):
+        self.prepared_states.extend(r.state for r in requests)
         if any(r.state == "overlong" for r in requests):
             raise ValueError("too many prompt tokens")
 
-    def decide_many(self, requests):
+        return [FakeRow(i, r.state, key) for i, r in enumerate(requests) for key in r.questions]
+
+    def decide_prepared(self, rows, *, request_count):
         self.threads.add(threading.get_ident())
-        self.batches.append(len(requests))
+        self.batches.append(request_count)
+        self.executed_rows.append(rows)
         time.sleep(self.delay)
         return [
-            {"answers": {"x": {"type": "noul", "noul": 0.7}}, "state": r.state} for r in requests
+            {"answers": {"x": {"type": "noul", "noul": 0.7}}, "state": r.state}
+            for r in [next(row for row in rows if row.request == i) for i in range(request_count)]
         ]
 
 
@@ -142,5 +157,41 @@ def test_unexpected_preparation_error_isolated_and_worker_survives():
                 assert later.json()["state"] == "later"
                 await asyncio.wait_for(app.state.batcher.queue.join(), timeout=0.5)
                 assert not app.state.batcher.task.done()
+
+    asyncio.run(scenario())
+
+
+def test_preparation_reused_with_compact_request_and_question_indexes():
+    async def scenario():
+        engine = FakeEngine()
+        app = create_app(lambda: engine, window_ms=15)
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                bodies = [
+                    {
+                        **BODY,
+                        "state": "first",
+                        "questions": {"x": BODY["questions"]["x"], "y": BODY["questions"]["x"]},
+                    },
+                    {**BODY, "state": "overlong"},
+                    {**BODY, "state": "last"},
+                ]
+                replies = await asyncio.gather(
+                    *(client.post("/v1/systemone", json=body) for body in bodies)
+                )
+                assert [r.status_code for r in replies] == [200, 422, 200]
+                assert engine.prepared_states == ["first", "overlong", "last"]
+                assert [(r.request, r.state, r.key) for r in engine.executed_rows[0]] == [
+                    (0, "first", "x"),
+                    (0, "first", "y"),
+                    (1, "last", "x"),
+                ]
+                assert [r.json()["state"] for r in replies if r.status_code == 200] == [
+                    "first",
+                    "last",
+                ]
+                assert len(engine.threads) == 1
 
     asyncio.run(scenario())
