@@ -2,7 +2,8 @@
 
 Prompt layout and formulas adapted from openjev/openjev helper/shim.py
 (Apache-2.0). See THIRD_PARTY_NOTICES.md. Never replace with a generic
-classification prompt: this model was tuned for this exact layout.
+classification prompt: this model was tuned for the default state-first layout.
+Rubric-first is an opt-in experimental reordering, not a calibrated equivalent.
 """
 
 import json
@@ -63,12 +64,20 @@ class Question(BaseModel):
             ("no", description(c.get("false")) or "The statement is false."),
         ]
 
-    def prompt(self, state: str) -> str:
+    def rubric(self) -> str:
         instructions = str(self.instructions)  # trained pyrepr mode for dict instructions
         if self.type == "score":
             instructions += " Rate along the ordered levels below (lowest first)."
         lines = "\n".join(f"[{LETTERS[i]}] {k}: {d}" for i, (k, d) in enumerate(self.options()))
-        return f"State:\n{state}\n\nQuestion: {instructions}\nOptions:\n{lines}\n\nAnswer with the letter of the best option only."
+        return f"Question: {instructions}\nOptions:\n{lines}"
+
+    def prefix(self, state: str, *, rubric_first: bool = False) -> str:
+        return self.rubric() if rubric_first else f"State:\n{state}"
+
+    def prompt(self, state: str, *, rubric_first: bool = False) -> str:
+        state_block, rubric = f"State:\n{state}", self.rubric()
+        blocks = (rubric, state_block) if rubric_first else (state_block, rubric)
+        return "\n\n".join((*blocks, "Answer with the letter of the best option only."))
 
     def answer(self, logits: list[float]) -> dict:
         opts = self.options()

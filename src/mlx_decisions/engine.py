@@ -46,6 +46,7 @@ class Engine:
         selected_head=True,
         prefix_reuse=True,
         fused_gate_up=False,
+        rubric_first=False,
     ):
         if min(max_batch_size, max_batch_tokens, max_prompt_tokens, prefill_chunk_size) < 1:
             raise ValueError("batch, prompt, and chunk limits must be positive")
@@ -71,6 +72,7 @@ class Engine:
             prefix_cache_entries,
             selected_head,
             prefix_reuse,
+            rubric_first,
         )
         self.fused_layers = fuse_gate_up(self.model) if fused_gate_up else 0
 
@@ -84,6 +86,7 @@ class Engine:
         prefix_cache_entries,
         selected_head,
         prefix_reuse,
+        rubric_first=False,
     ):
         if getattr(self.model, "model_type", None) != "qwen3_5":
             raise ValueError("this adapter currently supports dense qwen3_5 text models only")
@@ -101,6 +104,7 @@ class Engine:
             prefix_cache_entries,
         )
         self.selected_head, self.prefix_reuse = selected_head, prefix_reuse
+        self.rubric_first = rubric_first
         self._prefixes = OrderedDict()
         self._lock = threading.RLock()
         self.fused_layers = 0
@@ -122,9 +126,14 @@ class Engine:
             if request.model not in (MODEL_ID, "openjev", self.model_id):
                 raise ValueError(f"requested model {request.model!r} is not loaded")
             state = request.state_text()
-            anchor = self._tokens(f"State:\n{state}")
+            state_anchor = None if self.rubric_first else self._tokens(f"State:\n{state}")
             for key, question in request.questions.items():
-                tokens = self._tokens(question.prompt(state))
+                anchor = (
+                    self._tokens(question.prefix(state, rubric_first=True))
+                    if self.rubric_first
+                    else state_anchor
+                )
+                tokens = self._tokens(question.prompt(state, rubric_first=self.rubric_first))
                 if len(tokens) > self.max_prompt_tokens:
                     raise ValueError(
                         f"question {key!r} exceeds {self.max_prompt_tokens} prompt tokens"
@@ -197,7 +206,7 @@ class Engine:
             }
             values = {}
             if reference:
-                # Exactly the official shim path, not a narrowed-head baseline.
+                # Full forward on the selected prompt order, not a narrowed-head baseline.
                 for row in rows:
                     logits = self.model(mx.array(row.tokens)[None])[0, -1].astype(mx.float32)
                     scores = logits[self.letter_ids]
@@ -245,6 +254,7 @@ class Engine:
                 {
                     "model": self.model_id,
                     "revision": self.revision,
+                    "prompt_order": "rubric-first" if self.rubric_first else "state-first",
                     "answers": {},
                     "usage": {"input_tokens": 0, "output_tokens": 0},
                 }

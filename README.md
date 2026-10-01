@@ -3,7 +3,7 @@
 **Prefill-first decision inference for OpenJEV on Apple Silicon.**
 
 Return typed `choice`, `noul` (yes/no probability), and `score` answers without
-generating JSON or a chain of thought. Preserves the official OpenJEV text prompt,
+generating JSON or a chain of thought. By default, preserves the official OpenJEV text prompt,
 letter codebook, and calibration while specializing GPU execution.
 
 ## What is implemented
@@ -72,6 +72,31 @@ For **unrelated states**, disable prefix grouping to batch equal-length complete
 uv run mlx-decisions --no-prefix-cache --batch-size 4 serve
 ```
 
+### Experimental rubric-first flag
+
+For the **same question/criteria across changing states**, opt into rubric-first:
+
+```sh
+uv run mlx-decisions --rubric-first decide benchmarks/example.json
+uv run mlx-decisions --rubric-first serve --port 3000
+```
+
+Python: `Engine(rubric_first=True)`. The flag is server/engine-wide, not an HTTP
+request field. CLI global flags go **before** `decide` or `serve`.
+
+This renders **Question + Options → State → answer instruction**, caching the
+identical leading rubric tokens across requests. Changed instructions or option
+descriptions/order select a different cache prefix. Token-level matching handles
+tokenizer boundaries; cached branches still copy both KV and recurrent state.
+`--no-prefix-cache` disables reuse without changing the selected prompt order.
+Results include `prompt_order` (`state-first` or `rubric-first`).
+
+**State-first remains the default.** Rubric-first changes the training-time prompt
+layout: accuracy and probability calibration are unvalidated. The same readout
+formulas are applied, but that does not establish equivalent calibration. Cached
+tokens still participate in attention. A single `decide` invocation is a fresh
+process; reuse across calls requires a running server or a persistent `Engine`.
+
 Concurrent HTTP callers are combined within a 4 ms window. The GPU has one owner;
 this is batched parallel math, not simultaneous independent model executions.
 Do **not** run multiple Uvicorn model workers on one Mac. Read [the design tradeoffs](docs/research.md).
@@ -110,6 +135,9 @@ uv run pytest -q
 uv run ruff check src tests scripts
 uv run python scripts/check_checkpoint.py
 uv run python scripts/benchmark.py --repeats 3
+# Rubric-first cache parity plus separately reported drift from state-first:
+uv run python scripts/benchmark.py --rubric-first --repeats 3 \
+  --output benchmarks/results/rubric-first.json
 # Explicit experimental arm, compared against the unfused official baseline:
 uv run python scripts/benchmark.py --fuse-gate-up --repeats 3 \
   --output benchmarks/results/fused.json
@@ -120,6 +148,12 @@ uv run python scripts/benchmark_http.py --concurrency 1 2 4 8 --requests 16
 `benchmark.py` fails if any argmax changes or the maximum conditional-probability
 error exceeds 0.005. It records error magnitudes and every timing sample. The gate
 is a small synthetic compatibility check, **not** a held-out accuracy evaluation.
+With `--rubric-first`, the parity gate compares cached/optimized execution against
+an unfused full forward of the **same reordered prompt**. Changes versus the
+official state-first prompt are reported separately in
+`prompt_order_drift_vs_state_first`, not gated as cache errors. Speedups are then
+relative to rubric-first full forward, not the official prompt. Use the
+`four_queries_distinct_state` workload to exercise a shared rubric across states.
 No headline performance claim is inherited from Yukon's generation leaderboard.
 
 Initial development checks: **29 passed** on Apple M3 Pro, including real Metal

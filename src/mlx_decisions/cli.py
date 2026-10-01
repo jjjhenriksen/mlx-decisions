@@ -13,6 +13,11 @@ def main():
     parser.add_argument("--revision", default=MODEL_REVISION)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--no-prefix-cache", action="store_true")
+    parser.add_argument(
+        "--rubric-first",
+        action="store_true",
+        help="experimental: render/cache question and options before state; quality unvalidated",
+    )
     parser.add_argument("--full-head", action="store_true")
     parser.add_argument(
         "--fuse-gate-up", action="store_true", help="experimental; run parity benchmark first"
@@ -41,6 +46,7 @@ def main():
             prefix_reuse=not args.no_prefix_cache,
             selected_head=not args.full_head,
             fused_gate_up=args.fuse_gate_up,
+            rubric_first=args.rubric_first,
         )
 
     if args.command == "serve":

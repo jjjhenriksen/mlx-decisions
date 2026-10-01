@@ -91,6 +91,13 @@ def test_exact_upstream_prompts_and_calibration(data, monkeypatch):
     prompt_lines = "\n".join(f"[{LETTERS[i]}] {k}: {d}" for i, (k, d) in enumerate(seen["opts"]))
     expected_prompt = f"State:\nsome state\n\nQuestion: {seen['instructions']}\nOptions:\n{prompt_lines}\n\nAnswer with the letter of the best option only."
     assert q.prompt("some state") == expected_prompt
+    assert q.prompt("some state", rubric_first=False) == expected_prompt
+    rubric = f"Question: {seen['instructions']}\nOptions:\n{prompt_lines}"
+    assert q.prompt("some state", rubric_first=True) == (
+        f"{rubric}\n\nState:\nsome state\n\nAnswer with the letter of the best option only."
+    )
+    assert q.prefix("some state", rubric_first=True) == rubric
+    assert q.prefix("some state") == "State:\nsome state"
 
 
 def test_selected_logits_equal_full_logprob_readout():

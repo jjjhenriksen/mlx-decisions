@@ -96,15 +96,18 @@ def main():
     ap.add_argument("--probability-atol", type=float, default=0.005)
     ap.add_argument("--workload", choices=list(workloads()), action="append")
     ap.add_argument("--fuse-gate-up", action="store_true")
+    ap.add_argument("--rubric-first", action="store_true", help="experimental prompt ordering")
     args = ap.parse_args()
     if args.repeats < 1:
         ap.error("--repeats must be positive")
     started = time.perf_counter()
-    engine = Engine(args.model, revision=args.revision)
+    engine = Engine(args.model, revision=args.revision, rubric_first=args.rubric_first)
     loaded = time.perf_counter() - started
     report = {
         "model": engine.model_id,
         "revision": engine.revision,
+        "prompt_order": "rubric-first" if args.rubric_first else "state-first",
+        "parity_reference": "unfused full forward with the selected prompt order",
         "machine": platform.platform(),
         "device": mx.device_info(),
         "load_seconds": loaded,
@@ -130,13 +133,24 @@ def main():
     if args.workload:
         cases = {k: cases[k] for k in args.workload}
     references = {}
+    order_drift = {}
     # Reference is collected BEFORE optional fusion, so gate cannot compare a
     # mutated optimized model against itself.
     for name, requests in cases.items():
         rows = engine.prepare(requests)
         references[name] = engine.raw_scores(rows, reference=True)[0]
+        if args.rubric_first:
+            engine.rubric_first = False
+            try:
+                state_first = engine.raw_scores(engine.prepare(requests), reference=True)[0]
+            finally:
+                engine.rubric_first = True
+            # Different prompts need not agree. Report drift, never call it a
+            # cache parity failure or evidence of held-out accuracy/calibration.
+            order_drift[name] = parity(state_first, references[name], rows)
+    baseline_label = "rubric_first_full_forward" if args.rubric_first else "official_full_forward"
     variants = [
-        ("official_full_forward", False, False, 1, True),
+        (baseline_label, False, False, 1, True),
         ("last_position_full_head", False, False, 1, False),
         ("selected_head_serial", True, False, 1, False),
         ("selected_head_batch4", True, False, 4, False),
@@ -198,9 +212,13 @@ def main():
                 "median_group_wall_ms": median,
                 "requests_per_second": 1000 * len(requests) / median,
                 "decisions_per_second": 1000 * len(rows) / median,
-                "speedup_vs_official": baseline_ms / median if baseline_ms else None,
+                "speedup_vs_full_forward": baseline_ms / median if baseline_ms else None,
+                "speedup_vs_official": (
+                    baseline_ms / median if baseline_ms and not args.rubric_first else None
+                ),
                 "peak_metal_bytes_last_repeat": mx.get_peak_memory(),
                 "parity": gate,
+                "prompt_order_drift_vs_state_first": order_drift.get(name),
                 "work": all_metrics,
                 "answers": answers,
             }
@@ -215,8 +233,9 @@ def main():
                             "workload",
                             "variant",
                             "median_group_wall_ms",
-                            "speedup_vs_official",
+                            "speedup_vs_full_forward",
                             "parity",
+                            "prompt_order_drift_vs_state_first",
                         ]
                     }
                 ),

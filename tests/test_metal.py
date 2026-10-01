@@ -27,7 +27,7 @@ class TinyTokenizer:
         return self.encode("<user>" + messages[0]["content"] + "</user><assistant>")
 
 
-def tiny_engine(quantized=False):
+def tiny_engine(quantized=False, *, rubric_first=False):
     mx.random.seed(42)
     args = ModelArgs(
         model_type="qwen3_5",
@@ -55,7 +55,7 @@ def tiny_engine(quantized=False):
     engine = Engine.__new__(Engine)
     engine.model, engine.tokenizer = model, TinyTokenizer()
     engine.model_id, engine.revision = "tiny-test", None
-    engine._configure(4, 4096, 2048, 64, 100 * 1024**2, 2, True, True)
+    engine._configure(4, 4096, 2048, 64, 100 * 1024**2, 2, True, True, rubric_first)
     return engine
 
 
@@ -162,3 +162,103 @@ def test_cache_eviction_and_prompt_limit():
     engine.max_prompt_tokens = 5
     with pytest.raises(ValueError, match="prompt tokens"):
         engine.prepare(requests())
+
+
+@pytest.mark.parametrize("quantized", [False, True])
+def test_rubric_first_reuses_across_states_and_isolates_rubrics(quantized):
+    engine = tiny_engine(quantized, rubric_first=True)
+    question = requests()[0].questions["one"]
+    cases = [
+        DecisionRequest(state=state, questions={"route": question})
+        for state in ["State one", "State two", "A longer state"]
+    ]
+    rows = engine.prepare(cases)
+    assert len({r.prefix for r in rows}) == 1
+    assert len({r.tokens for r in rows}) == 3
+    assert all(r.tokens[: len(r.prefix)] == r.prefix for r in rows)
+    assert all(0 < len(r.prefix) < len(r.tokens) for r in rows)
+    reference, _ = engine.raw_scores(rows, reference=True)
+    actual, metrics = engine.raw_scores(rows)
+    assert metrics["prefix_misses"] == 1
+    assert 2 in metrics["batch_sizes"]
+    for key in reference:
+        assert mx.allclose(mx.array(reference[key]), mx.array(actual[key]), atol=2e-4).item()
+    # New state on a later call must hit the rubric, without stale recurrent state.
+    new = DecisionRequest(state="Entirely new state", questions={"route": question})
+    new_rows = engine.prepare([new])
+    new_reference, _ = engine.raw_scores(new_rows, reference=True)
+    warm, metrics = engine.raw_scores(new_rows)
+    assert metrics["prefix_hits"] == 1
+    assert metrics["prefill_tokens"] == len(new_rows[0].tokens) - len(new_rows[0].prefix)
+    assert mx.allclose(
+        mx.array(new_reference[(0, "route")]), mx.array(warm[(0, "route")]), atol=2e-4
+    ).item()
+    # Either changed instructions or changed criteria must miss the old rubric.
+    for update in [{"instructions": "Pick z"}, {"criteria": {"a": "new meaning", "b": None}}]:
+        changed = DecisionRequest(
+            state=new.state, questions={"route": question.model_copy(update=update)}
+        )
+        changed_rows = engine.prepare([changed])
+        assert changed_rows[0].prefix != new_rows[0].prefix
+        _, metrics = engine.raw_scores(changed_rows)
+        assert metrics["prefix_hits"] == 0
+        assert metrics["prefix_misses"] == 1
+    engine.prefix_reuse = False
+    fresh, metrics = engine.raw_scores(rows)
+    assert metrics["prefix_hits"] == metrics["prefix_misses"] == 0
+    for key in reference:
+        assert mx.allclose(mx.array(reference[key]), mx.array(fresh[key]), atol=2e-4).item()
+    assert engine.decide(new)["prompt_order"] == "rubric-first"
+    engine.rubric_first = False
+    assert engine.decide(new)["prompt_order"] == "state-first"
+
+
+@pytest.mark.parametrize("rubric_first", [False, True])
+def test_benchmark_distinguishes_order_drift_from_cache_parity(rubric_first, monkeypatch, tmp_path):
+    import importlib.util
+    import json
+    import sys
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        "benchmark", Path(__file__).parents[1] / "scripts/benchmark.py"
+    )
+    benchmark = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(benchmark)
+    monkeypatch.setattr(
+        benchmark, "Engine", lambda *a, **kw: tiny_engine(rubric_first=kw["rubric_first"])
+    )
+    question = requests()[0].questions["one"]
+    monkeypatch.setattr(
+        benchmark,
+        "workloads",
+        lambda: {
+            "shared_rubric": [
+                DecisionRequest(state=s, questions={"q": question}) for s in ["first", "other"]
+            ],
+        },
+    )
+    output = tmp_path / "benchmark.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "benchmark.py",
+            "--repeats",
+            "1",
+            "--output",
+            str(output),
+            *(["--rubric-first"] if rubric_first else []),
+        ],
+    )
+    benchmark.main()
+    report = json.loads(output.read_text())
+    assert report["prompt_order"] == ("rubric-first" if rubric_first else "state-first")
+    expected = "rubric_first_full_forward" if rubric_first else "official_full_forward"
+    assert report["results"][0]["variant"] == expected
+    for result in report["results"]:
+        assert result["parity"]["passed"]
+        assert result["speedup_vs_full_forward"] > 0
+        assert (result["prompt_order_drift_vs_state_first"] is not None) is rubric_first
+        if rubric_first:
+            assert result["speedup_vs_official"] is None
