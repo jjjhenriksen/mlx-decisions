@@ -108,6 +108,7 @@ it remotely, add authentication/admission controls outside this local server fir
 ```sh
 uv run pytest -q
 uv run ruff check src tests scripts
+uv run python scripts/check_checkpoint.py
 uv run python scripts/benchmark.py --repeats 3
 # Explicit experimental arm, compared against the unfused official baseline:
 uv run python scripts/benchmark.py --fuse-gate-up --repeats 3 \
@@ -121,10 +122,16 @@ error exceeds 0.005. It records error magnitudes and every timing sample. The ga
 is a small synthetic compatibility check, **not** a held-out accuracy evaluation.
 No headline performance claim is inherited from Yukon's generation leaderboard.
 
-Initial development checks: **28 passed** on Apple M3 Pro, including real Metal
-projection/fusion and tiny hybrid-Qwen cache tests. Full 27B checkpoint benchmarking
-is in progress; do not interpret the tiny-model tests as full-model evidence.
-Results will be recorded under `benchmarks/results/`.
+Initial development checks: **29 passed** on Apple M3 Pro, including real Metal
+projection/fusion and tiny hybrid-Qwen cache tests. The real pinned tokenizer
+also passes its 52-letter single-token contract. **Full 27B inference and timing
+remain unverified:** the download failed with `ENOSPC` despite macOS reporting
+substantial important-usage/reclaimable capacity. Two of six shards are retained
+(about 10.6 GB); approximately 18.0 GB of weights remain. No files were deleted.
+See [validation evidence](benchmarks/results/validation-2026-10-01.json) and
+[checkpoint contract](benchmarks/results/checkpoint-contract.json). After making
+enough writable space available, rerun the download and benchmark commands above.
+Do not interpret the tiny-model tests as full-model evidence.
 
 ## Research and license
 

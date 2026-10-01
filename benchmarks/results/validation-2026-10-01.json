@@ -1,0 +1,36 @@
+{
+  "timestamp_utc": "2026-10-01T19:36:31Z",
+  "device": "Apple M3 Pro",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "test_command": ".venv/bin/python -m pytest -q",
+  "tests_passed": 29,
+  "lint_command": ".venv/bin/ruff check src tests scripts",
+  "lint_passed": true,
+  "versions": {
+    "mlx": "0.32.3",
+    "mlx-lm": "0.32.0",
+    "transformers": "5.18.0",
+    "pytest": "9.1.1"
+  },
+  "verified": [
+    "official helper prompt and calibration contract",
+    "quantized selected-head Metal parity",
+    "float and quantized dense gate/up fusion parity",
+    "tiny hybrid Qwen3.5 serial/batch/prefix parity",
+    "cache isolation and eviction",
+    "HTTP validation, batching, overload, timeout, shutdown",
+    "real pinned OpenJEV tokenizer: 52 unique single-token letters"
+  ],
+  "full_model_inference": "not run",
+  "full_model_benchmark": "blocked",
+  "blocker": "Hugging Face weight download failed with No space left on device (os error 28). macOS important-usage capacity was much larger than writable free blocks; no user files or caches were deleted.",
+  "model": "openjev/openjev-MLX",
+  "revision": "a9dcc20aa827a6c7eae478f6ebb3b255bb135451",
+  "completed_shards": 2,
+  "total_shards": 6,
+  "weight_bytes_present": 10630240158,
+  "weight_bytes_total": 28579720565,
+  "weight_bytes_remaining": 17949480407,
+  "resume_command": "uv run mlx-decisions download",
+  "inference_speedup_claim": null
+}
