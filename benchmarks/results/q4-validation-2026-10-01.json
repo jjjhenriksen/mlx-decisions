@@ -1,0 +1,100 @@
+{
+  "timestamp_utc": "2026-10-01T21:00:50.977111+00:00",
+  "model": "openjev/openjev-MLX-4bit",
+  "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
+  "device": {
+    "device_name": "Apple M3 Pro",
+    "max_recommended_working_set_size": 30150672384,
+    "memory_size": 38654705664,
+    "architecture": "applegpu_g15s",
+    "max_buffer_length": 22613000192,
+    "resource_limit": 499000
+  },
+  "regression_tests_passed": 38,
+  "lint_passed": true,
+  "benchmark_cases_completed": 60,
+  "measured_repeats_per_case": 3,
+  "benchmark_cases_passed": 56,
+  "benchmark_cases_failed": 4,
+  "benchmark_case_count_includes_reference_baselines": true,
+  "gate_probability_atol": 0.005,
+  "failures": [
+    {
+      "prompt_order": "state-first",
+      "workload": "four_questions_shared_state",
+      "variant": "selected_head_batch4",
+      "max_abs_logit_error": 0.125,
+      "max_abs_probability_error": 0.029492199420928955,
+      "decision_flips": 0,
+      "passed": false
+    },
+    {
+      "prompt_order": "state-first",
+      "workload": "four_questions_shared_state",
+      "variant": "prefix_batch4_cold",
+      "max_abs_logit_error": 0.125,
+      "max_abs_probability_error": 0.010957613587379456,
+      "decision_flips": 0,
+      "passed": false
+    },
+    {
+      "prompt_order": "state-first",
+      "workload": "four_questions_shared_state",
+      "variant": "prefix_batch4_warm",
+      "max_abs_logit_error": 0.125,
+      "max_abs_probability_error": 0.010957613587379456,
+      "decision_flips": 0,
+      "passed": false
+    },
+    {
+      "prompt_order": "rubric-first",
+      "workload": "four_questions_shared_state",
+      "variant": "selected_head_batch4",
+      "max_abs_logit_error": 0.125,
+      "max_abs_probability_error": 0.02545565366744995,
+      "decision_flips": 0,
+      "passed": false
+    }
+  ],
+  "prompt_order_drift": {
+    "single": {
+      "max_abs_logit_error": 2.6875,
+      "max_abs_probability_error": 0.001611173152923584,
+      "decision_flips": 0
+    },
+    "four_questions_shared_state": {
+      "max_abs_logit_error": 3.75,
+      "max_abs_probability_error": 0.11685216426849365,
+      "decision_flips": 0
+    },
+    "four_queries_shared_state": {
+      "max_abs_logit_error": 2.6875,
+      "max_abs_probability_error": 0.001611173152923584,
+      "decision_flips": 0
+    },
+    "four_queries_distinct_state": {
+      "max_abs_logit_error": 1.4375,
+      "max_abs_probability_error": 0.0007069110870361328,
+      "decision_flips": 0
+    },
+    "long_state_four_queries": {
+      "max_abs_logit_error": 1.4375,
+      "max_abs_probability_error": 0.004201829433441162,
+      "decision_flips": 0
+    }
+  },
+  "maximum_metal_peak_bytes": 17655487182,
+  "maximum_cache_parity_probability_error": 0.029492199420928955,
+  "maximum_cache_parity_decision_flips_in_a_case": 0,
+  "cli_smoke_passed": true,
+  "scope": "Synthetic smoke only; not held-out accuracy/calibration, Q4 versus Q8 equivalence, or live HTTP concurrency.",
+  "source_sha256": {
+    "src/mlx_decisions/engine.py": "f957afd3e029894f620cb3fd05e4b3205c9f84ae21bcc0824c41d22220c475ea",
+    "src/mlx_decisions/protocol.py": "8d2bc14e0ea7b4b1acd39bdcd308e934d24407484f0a6647f8ae2d197c47f382",
+    "src/mlx_decisions/optimizations.py": "769944b379cb4985c3298789b7cd075c8f21761c7ce03490cd7d13c47dff0964",
+    "scripts/benchmark.py": "06db7feca0cb677bd9ee8d7459d438fb30aa975c1651744a180bc0f60d96808e",
+    "tests/test_loading.py": "bc6f69780917e2e3606c34f9d34b9ae64bbd4196e3a27d0c510c98d1395ebc5c"
+  },
+  "git_commit_at_run": "7e514652f5dd71df21b921960e9f1b8b1e4d9c55",
+  "tested_uncommitted_changes": true
+}

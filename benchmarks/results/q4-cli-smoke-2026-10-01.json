@@ -1,0 +1,56 @@
+{
+  "model": "openjev/openjev-MLX-4bit",
+  "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
+  "prompt_order": "rubric-first",
+  "answers": {
+    "route": {
+      "type": "choice",
+      "choice": "billing",
+      "probabilities": {
+        "billing": 0.9983,
+        "shipping": 0.001,
+        "technical": 0.0007
+      },
+      "confidence": 0.9974
+    },
+    "angry": {
+      "type": "noul",
+      "noul": 0.6734
+    },
+    "urgency": {
+      "type": "score",
+      "score": 1.6972,
+      "legend": {
+        "0": "can wait",
+        "1": "this week",
+        "2": "today",
+        "3": "right now"
+      },
+      "probabilities": {
+        "0": 0.0245,
+        "1": 0.3458,
+        "2": 0.5376,
+        "3": 0.0921
+      },
+      "confidence": 0.5131
+    }
+  },
+  "usage": {
+    "input_tokens": 239,
+    "output_tokens": 0
+  },
+  "performance": {
+    "group_wall_ms": 4112.851959012914,
+    "group_requests": 1,
+    "prefix_hits": 0,
+    "prefix_misses": 3,
+    "prefill_tokens": 239,
+    "scored_rows": 3,
+    "gpu_batches": 3,
+    "batch_sizes": [
+      1,
+      1,
+      1
+    ]
+  }
+}

@@ -1,10 +1,10 @@
 {
-  "model": "openjev/openjev-MLX",
-  "revision": "a9dcc20aa827a6c7eae478f6ebb3b255bb135451",
+  "model": "openjev/openjev-MLX-4bit",
+  "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
   "architecture": "qwen3_5",
   "quantization": {
     "group_size": 64,
-    "bits": 8,
+    "bits": 4,
     "mode": "affine"
   },
   "letter_token_ids": {
@@ -165,52 +165,23 @@
       89
     ]
   },
-  "example_prompts": {
-    "route": {
-      "tokens": 70,
-      "rendered_sha256": "c50bf4f547f0190037b44aebcd760398e27f278333a84d328bef21b87d35d4e3"
-    },
-    "angry": {
-      "tokens": 74,
-      "rendered_sha256": "e22670675cf859bb5a4e306a70ec6f2487d9f3ef5ae5441a4f34391bfb85169f"
-    },
-    "urgency": {
-      "tokens": 95,
-      "rendered_sha256": "2f8f593c4a8d850075700a5f553d657748a60046fb80ac52a7c2a86732e5b780"
-    }
-  },
   "shards": [
     {
-      "file": "model-00001-of-00006.safetensors",
-      "expected_bytes": 5305469335,
-      "present_bytes": 5305469335
+      "file": "model-00001-of-00003.safetensors",
+      "expected_bytes": 5328325554,
+      "present_bytes": 5328325554
     },
     {
-      "file": "model-00002-of-00006.safetensors",
-      "expected_bytes": 5354102610,
-      "present_bytes": 5354102610
+      "file": "model-00002-of-00003.safetensors",
+      "expected_bytes": 5354185158,
+      "present_bytes": 5354185158
     },
     {
-      "file": "model-00003-of-00006.safetensors",
-      "expected_bytes": 5337392976,
-      "present_bytes": 5337392976
-    },
-    {
-      "file": "model-00004-of-00006.safetensors",
-      "expected_bytes": 5292847182,
-      "present_bytes": 5292847182
-    },
-    {
-      "file": "model-00005-of-00006.safetensors",
-      "expected_bytes": 5354102641,
-      "present_bytes": 5354102641
-    },
-    {
-      "file": "model-00006-of-00006.safetensors",
-      "expected_bytes": 1935805821,
-      "present_bytes": 1935805821
+      "file": "model-00003-of-00003.safetensors",
+      "expected_bytes": 4450532795,
+      "present_bytes": 4450532795
     }
   ],
   "all_weights_present": true,
-  "verification_boundary": "Tokenizer/metadata check only; no full-model inference."
+  "verification_boundary": "Local shard sizes and tokenizer contract; no fresh cryptographic shard verification or 8-bit equivalence claim."
 }

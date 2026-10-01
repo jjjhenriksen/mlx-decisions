@@ -18,7 +18,8 @@ letter codebook, and calibration while specializing GPU execution.
   raw-logit/probability parity, decision flips, batch counts, and HTTP p50/p95 latency.
 
 Python + MLX-LM backend, not a Swift engine fork. Current model adapter: dense Qwen3.5,
-targeting the official **8-bit OpenJEV-MLX** checkpoint. The 4-bit model is not substituted.
+defaulting to the official **8-bit OpenJEV-MLX** checkpoint. The official 4-bit
+checkpoint can be selected explicitly; it is never silently substituted.
 
 ## Quick start
 
@@ -36,6 +37,20 @@ The download is pinned to `openjev/openjev-MLX` revision
 `a9dcc20aa827a6c7eae478f6ebb3b255bb135451`. Weights stay in the Hugging Face cache,
 not in Git. `--model /local/checkpoint` is also supported (local provenance is
 reported as unknown rather than claiming a Hub revision).
+
+For a lower-memory Q4 run, select the official 4-bit checkpoint and its own revision:
+
+```sh
+hf download openjev/openjev-MLX-4bit \
+  --revision 63aecab0abcba710f38270ddc1061fb2e3d8d143 --max-workers 1
+uv run mlx-decisions --model openjev/openjev-MLX-4bit \
+  --revision 63aecab0abcba710f38270ddc1061fb2e3d8d143 \
+  --rubric-first decide benchmarks/example.json
+```
+
+Q4 is a different quantized checkpoint: parity against its own full forward does
+not establish equivalence to the 8-bit checkpoint. Weights are loaded lazily and
+materialized sequentially to reduce temporary load-time memory peaks.
 
 ```sh
 curl http://127.0.0.1:3000/v1/systemone \
@@ -148,6 +163,10 @@ uv run python scripts/benchmark_http.py --concurrency 1 2 4 8 --requests 16
 `benchmark.py` fails if any argmax changes or the maximum conditional-probability
 error exceeds 0.005. It records error magnitudes and every timing sample. The gate
 is a small synthetic compatibility check, **not** a held-out accuracy evaluation.
+The benchmark caps the process-wide MLX allocator cache at 512 MiB by default
+(`--metal-cache-mib`); this is separate from model weights and the prefix KV cache,
+and the selected limit is recorded in the result file. For Q4, pass the explicit
+`--model` and `--revision` shown above to the benchmark too.
 With `--rubric-first`, the parity gate compares cached/optimized execution against
 an unfused full forward of the **same reordered prompt**. Changes versus the
 official state-first prompt are reported separately in
@@ -156,16 +175,27 @@ relative to rubric-first full forward, not the official prompt. Use the
 `four_queries_distinct_state` workload to exercise a shared rubric across states.
 No headline performance claim is inherited from Yukon's generation leaderboard.
 
-Initial development checks: **29 passed** on Apple M3 Pro, including real Metal
-projection/fusion and tiny hybrid-Qwen cache tests. The real pinned tokenizer
-also passes its 52-letter single-token contract. **Full 27B inference and timing
-remain unverified:** the download failed with `ENOSPC` despite macOS reporting
-substantial important-usage/reclaimable capacity. Two of six shards are retained
-(about 10.6 GB); approximately 18.0 GB of weights remain. No files were deleted.
-See [validation evidence](benchmarks/results/validation-2026-10-01.json) and
-[checkpoint contract](benchmarks/results/checkpoint-contract.json). After making
-enough writable space available, rerun the download and benchmark commands above.
-Do not interpret the tiny-model tests as full-model evidence.
+Full-model **Q4** results on Apple M3 Pro (36 GiB): **56/60 variant/workload cases
+passed probability parity; four failed**, with no decision flips. The failures
+are the multi-question batch-four variant in both prompt orders, plus the
+state-first cold/warm prefix variants. Maximum probability error was 0.029492
+against a 0.005 limit. Do not promote those variants as probability-equivalent.
+
+For one rubric across four distinct states, repeated-call group latency was
+**3.89 s state-first versus 1.61 s rubric-first** with the default two-entry cache.
+For four queries sharing a long state, warm-prefix latency reversed:
+**1.95 s state-first versus 19.05 s rubric-first**. Each is a three-run median.
+Prompt reordering itself changed conditional probabilities by up to **0.116852**
+in this small synthetic suite, without changing the winning choices. These are
+not held-out accuracy/calibration results or evidence of Q4/8-bit equivalence.
+
+See the [full Q4 validation report](benchmarks/results/q4-validation-2026-10-01.md),
+[raw state-first samples](benchmarks/results/q4-state-first-2026-10-01.json), and
+[raw rubric-first samples](benchmarks/results/q4-rubric-first-2026-10-01.json).
+Both checkpoints are now downloaded. The 8-bit full-forward run hit severe memory
+pressure on this machine; no successful 8-bit timing/parity result is claimed.
+The [initial development evidence](benchmarks/results/validation-2026-10-01.json)
+records the earlier download blocker, not the current Q4 validation state.
 
 ## Research and license
 
