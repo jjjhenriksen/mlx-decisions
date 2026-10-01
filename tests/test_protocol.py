@@ -123,3 +123,13 @@ def test_state_and_image_contract():
         DecisionRequest(state={"image": "anything"}, questions=q)
     with pytest.raises(ValidationError):
         DecisionRequest(state="x", questions={})
+
+
+def test_frozen_upstream_fixture_digest():
+    import hashlib
+
+    source = Path(__file__).parent / "fixtures/openjev_shim.py"
+    assert (
+        hashlib.sha256(source.read_bytes()).hexdigest()
+        == "81a22f1b1b8912a465059207ef9f60b7c6c16b4de6372305d867efbe38a1987a"
+    )
