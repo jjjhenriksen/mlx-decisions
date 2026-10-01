@@ -111,10 +111,16 @@ async def run(args, *, transport=None):
                             result["samples"].append(sample)
 
                 start = time.perf_counter()
+                tasks = [asyncio.create_task(one(i)) for i in range(args.requests)]
                 try:
-                    await asyncio.gather(*(one(i) for i in range(args.requests)))
+                    await asyncio.gather(*tasks)
                     result["complete"] = True
                 finally:
+                    # Drain all started attempts before writing a partial report.
+                    for task in tasks:
+                        if not task.done():
+                            task.cancel()
+                    await asyncio.gather(*tasks, return_exceptions=True)
                     summarize(result, time.perf_counter() - start)
                     save()
                 print(json.dumps({k: v for k, v in result.items() if k != "samples"}), flush=True)

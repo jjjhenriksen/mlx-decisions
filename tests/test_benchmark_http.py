@@ -110,3 +110,27 @@ def test_partial_measurement_survives_unexpected_failure(tmp_path):
     assert result["successful_requests"] == result["failed_requests"] == 1
     assert result["error_counts"] == {"unexpected_error": 1}
     assert result["samples"][0]["success"]
+
+
+def test_partial_report_drains_inflight_attempts_before_saving(tmp_path):
+    args = arguments(tmp_path, 3)
+
+    async def server(request):
+        if request.url.path == "/ready" or json.loads(request.content)["state"] == "fixture":
+            return httpx.Response(200, json=SUCCESS)
+        state = json.loads(request.content)["state"]
+        if state.startswith("Request 0:"):
+            return httpx.Response(200, json=SUCCESS)
+        if state.startswith("Request 1:"):
+            await asyncio.sleep(0)
+            raise RuntimeError("fixture failure")
+        await asyncio.sleep(10)
+        return httpx.Response(200, json=SUCCESS)
+
+    with pytest.raises(RuntimeError):
+        asyncio.run(benchmark.run(args, transport=httpx.MockTransport(server)))
+    report = json.loads(args.output.read_text())
+    result = report["results"][0]
+    assert result["attempted_requests"] == 3
+    assert result["successful_requests"] == 1
+    assert result["error_counts"] == {"unexpected_error": 1, "interrupted": 1}
