@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import mlx.core as mx
+from mlx.utils import tree_flatten
 from mlx_lm import load
 from mlx_lm.models.cache import make_prompt_cache
 from transformers import AutoTokenizer
@@ -61,7 +62,18 @@ class Engine:
             from huggingface_hub import snapshot_download
 
             model_path = snapshot_download(model, revision=revision)
-        self.model, _ = load(model_path)
+        # Evaluating all checkpoint tensors together can overlap file staging
+        # allocations and exhaust a 36 GiB Mac before inference even begins.
+        # Materialize the unchanged stored weights one tensor at a time, and
+        # do not retain temporary loader allocations in the Metal cache.
+        previous_cache_limit = mx.set_cache_limit(0)
+        try:
+            self.model, _ = load(model_path, lazy=True)
+            for _, parameter in tree_flatten(self.model.parameters()):
+                mx.eval(parameter)
+            mx.clear_cache()
+        finally:
+            mx.set_cache_limit(previous_cache_limit)
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=False)
         self._configure(
             max_batch_size,
