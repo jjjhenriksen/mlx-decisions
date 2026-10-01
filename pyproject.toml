@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mlx-decisions"
+version = "0.1.0"
+description = "Prefill-first, batched decision inference for OpenJEV on Apple Silicon"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = ["mlx-lm==0.32.0", "mlx==0.32.3", "transformers==5.18.0", "huggingface-hub>=1.0", "fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.28", "ruff>=0.12"]
+
+[project.scripts]
+mlx-decisions = "mlx_decisions.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["metal: requires Apple Silicon and MLX", "integration: requires OpenJEV weights"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_metal.py" = ["E402"]
