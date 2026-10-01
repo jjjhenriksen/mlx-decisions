@@ -11,7 +11,7 @@ from mlx_lm import load
 from mlx_lm.models.cache import make_prompt_cache
 from transformers import AutoTokenizer
 
-from .optimizations import SelectedHead, evaluate_cache, fork_cache, fuse_gate_up
+from .optimizations import SelectedHead, fork_cache, fuse_gate_up
 from .protocol import LETTERS, MODEL_ID, MODEL_REVISION, DecisionRequest
 
 
@@ -144,8 +144,7 @@ class Engine:
                 mx.array(tokens[start : start + self.prefill_chunk_size])[None], cache=cache
             )
             # Commit recurrent state as well as KV writes, but skip lm_head.
-            mx.eval(hidden[:, -1:, :])
-            evaluate_cache(cache)
+            mx.eval(hidden[:, -1:, :], [layer.state for layer in cache])
 
     def _prefix(self, tokens):
         if tokens in self._prefixes:
@@ -178,8 +177,7 @@ class Engine:
         for offset in range(0, inputs.shape[1], self.prefill_chunk_size):
             hidden = self.trunk(inputs[:, offset : offset + self.prefill_chunk_size], cache=cache)
             last = hidden[:, -1, :]
-            mx.eval(last)
-            evaluate_cache(cache)
+            mx.eval(last, [layer.state for layer in cache])
         scores = (
             self.selected(last) if self.selected_head else self.head(last)[:, self.letter_ids]
         ).astype(mx.float32)
@@ -243,7 +241,6 @@ class Engine:
         with self._lock:
             rows = self.prepare(requests)
             raw, metrics = self.raw_scores(rows)
-            elapsed = (time.perf_counter() - start) * 1000
             results = [
                 {
                     "model": self.model_id,
@@ -258,6 +255,7 @@ class Engine:
                     raw[(row.request, row.key)][: len(row.question.options())]
                 )
                 results[row.request]["usage"]["input_tokens"] += len(row.tokens)
+            elapsed = (time.perf_counter() - start) * 1000
             for result in results:
                 result["performance"] = {
                     "group_wall_ms": elapsed,

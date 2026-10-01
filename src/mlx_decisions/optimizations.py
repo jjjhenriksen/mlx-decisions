@@ -79,8 +79,7 @@ def fork_cache(cache, batch_size=1):
 
 
 def evaluate_cache(cache):
-    for layer in cache:
-        mx.eval(layer.state)
+    mx.eval([layer.state for layer in cache])
 
 
 class FusedGateUp(nn.Module):
