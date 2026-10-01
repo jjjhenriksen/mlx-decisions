@@ -97,12 +97,20 @@ def main():
     ap.add_argument("--workload", choices=list(workloads()), action="append")
     ap.add_argument("--fuse-gate-up", action="store_true")
     ap.add_argument("--rubric-first", action="store_true", help="experimental prompt ordering")
+    ap.add_argument(
+        "--metal-cache-mib", type=int, default=512,
+        help="process-wide MLX allocator cache budget (not the model or prefix cache)",
+    )
     args = ap.parse_args()
     if args.repeats < 1:
         ap.error("--repeats must be positive")
+    if args.metal_cache_mib < 0:
+        ap.error("--metal-cache-mib must be nonnegative")
+    mx.set_cache_limit(args.metal_cache_mib * 1024**2)
     started = time.perf_counter()
     engine = Engine(args.model, revision=args.revision, rubric_first=args.rubric_first)
     loaded = time.perf_counter() - started
+    print(json.dumps({"event": "model_loaded", "seconds": loaded}), flush=True)
     report = {
         "model": engine.model_id,
         "revision": engine.revision,
@@ -111,6 +119,7 @@ def main():
         "machine": platform.platform(),
         "device": mx.device_info(),
         "load_seconds": loaded,
+        "metal_allocator_cache_limit_bytes": args.metal_cache_mib * 1024**2,
         "versions": {
             name: version(name) for name in ["mlx", "mlx-lm", "transformers", "mlx-decisions"]
         },
@@ -137,6 +146,7 @@ def main():
     # Reference is collected BEFORE optional fusion, so gate cannot compare a
     # mutated optimized model against itself.
     for name, requests in cases.items():
+        print(json.dumps({"event": "reference_started", "workload": name}), flush=True)
         rows = engine.prepare(requests)
         references[name] = engine.raw_scores(rows, reference=True)[0]
         if args.rubric_first:
@@ -166,6 +176,10 @@ def main():
     for name, requests in cases.items():
         baseline_ms = None
         for label, selected, prefix, batch, reference in variants:
+            print(
+                json.dumps({"event": "case_started", "workload": name, "variant": label}),
+                flush=True,
+            )
             engine.selected_head, engine.prefix_reuse, engine.max_batch_size = (
                 selected,
                 prefix,
