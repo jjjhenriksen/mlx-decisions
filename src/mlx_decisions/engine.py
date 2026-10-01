@@ -261,30 +261,45 @@ class Engine:
         # Tokenizer, lazy arrays and cache all have one owner even for Python callers.
         with self._lock:
             rows = self.prepare(requests)
-            raw, metrics = self.raw_scores(rows)
-            results = [
-                {
-                    "model": self.model_id,
-                    "revision": self.revision,
-                    "prompt_order": "rubric-first" if self.rubric_first else "state-first",
-                    "answers": {},
-                    "usage": {"input_tokens": 0, "output_tokens": 0},
-                }
-                for _ in requests
-            ]
-            for row in rows:
-                results[row.request]["answers"][row.key] = row.question.answer(
-                    raw[(row.request, row.key)][: len(row.question.options())]
-                )
-                results[row.request]["usage"]["input_tokens"] += len(row.tokens)
-            elapsed = (time.perf_counter() - start) * 1000
-            for result in results:
-                result["performance"] = {
-                    "group_wall_ms": elapsed,
-                    "group_requests": len(requests),
-                    **metrics,
-                }
-            return results
+            return self._decide_prepared(rows, len(requests), start)
+
+    def decide_prepared(self, rows: list[Row], *, request_count: int):
+        """Execute rows prepared by this engine, with compact request indexes.
+
+        The caller owns preparation/error isolation and must retain the rows'
+        questions, token sequences and prefixes unchanged except for request indexes.
+        """
+        start = time.perf_counter()
+        with self._lock:
+            if request_count < 1 or {row.request for row in rows} != set(range(request_count)):
+                raise ValueError("prepared rows must cover every request index")
+            return self._decide_prepared(rows, request_count, start)
+
+    def _decide_prepared(self, rows, request_count, start):
+        raw, metrics = self.raw_scores(rows)
+        results = [
+            {
+                "model": self.model_id,
+                "revision": self.revision,
+                "prompt_order": "rubric-first" if self.rubric_first else "state-first",
+                "answers": {},
+                "usage": {"input_tokens": 0, "output_tokens": 0},
+            }
+            for _ in range(request_count)
+        ]
+        for row in rows:
+            results[row.request]["answers"][row.key] = row.question.answer(
+                raw[(row.request, row.key)][: len(row.question.options())]
+            )
+            results[row.request]["usage"]["input_tokens"] += len(row.tokens)
+        elapsed = (time.perf_counter() - start) * 1000
+        for result in results:
+            result["performance"] = {
+                "group_wall_ms": elapsed,
+                "group_requests": request_count,
+                **metrics,
+            }
+        return results
 
     def decide(self, request):
         return self.decide_many([request])[0]

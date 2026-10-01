@@ -262,3 +262,23 @@ def test_benchmark_distinguishes_order_drift_from_cache_parity(rubric_first, mon
         assert (result["prompt_order_drift_vs_state_first"] is not None) is rubric_first
         if rubric_first:
             assert result["speedup_vs_official"] is None
+
+
+def test_prepared_execution_matches_direct_and_does_not_tokenize(monkeypatch):
+    engine = tiny_engine()
+    cases = requests()
+    direct = engine.decide_many(cases)
+    rows = engine.prepare(cases)
+    engine.clear_cache()
+
+    def unexpected_prepare(*args, **kwargs):
+        raise AssertionError("prepared execution must not tokenize again")
+
+    monkeypatch.setattr(engine, "prepare", unexpected_prepare)
+    prepared = engine.decide_prepared(rows, request_count=len(cases))
+    for actual, expected in zip(prepared, direct, strict=True):
+        assert actual["answers"] == expected["answers"]
+        assert actual["usage"] == expected["usage"]
+        assert actual["performance"]["group_requests"] == len(cases)
+    with pytest.raises(ValueError, match="every request index"):
+        engine.decide_prepared(rows, request_count=len(cases) + 1)

@@ -5,7 +5,7 @@ import json
 import time
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import ValidationError
@@ -46,20 +46,21 @@ class Batcher:
 
     def _evaluate(self, group):
         # A malformed/overlong request must not poison unrelated queued clients.
-        good, outputs = [], [None] * len(group)
+        good, rows, outputs = [], [], [None] * len(group)
         for i, item in enumerate(group):
             try:
-                self.engine.prepare([item.request])
-                good.append((i, item.request))
+                prepared = self.engine.prepare([item.request])
+                rows.extend(replace(row, request=len(good)) for row in prepared)
+                good.append(i)
             except Exception as error:
                 outputs[i] = error
         if good:
             try:
-                results = self.engine.decide_many([request for _, request in good])
-                for (i, _), result in zip(good, results, strict=True):
+                results = self.engine.decide_prepared(rows, request_count=len(good))
+                for i, result in zip(good, results, strict=True):
                     outputs[i] = result
             except Exception as error:
-                for i, _ in good:
+                for i in good:
                     outputs[i] = error
         return outputs
 
