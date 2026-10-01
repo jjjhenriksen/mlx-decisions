@@ -51,7 +51,7 @@ class Batcher:
             try:
                 self.engine.prepare([item.request])
                 good.append((i, item.request))
-            except ValueError as error:
+            except Exception as error:
                 outputs[i] = error
         if good:
             try:
