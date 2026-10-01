@@ -111,3 +111,36 @@ def test_shutdown_during_batch_window():
         executor.shutdown()
 
     asyncio.run(scenario())
+
+
+def test_unexpected_preparation_error_isolated_and_worker_survives():
+    class FailingEngine(FakeEngine):
+        def prepare(self, requests):
+            if any(r.state == "broken" for r in requests):
+                raise RuntimeError("private tokenizer details")
+            return super().prepare(requests)
+
+    async def scenario():
+        engine = FailingEngine()
+        app = create_app(lambda: engine, window_ms=15, timeout=0.5)
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                replies = await asyncio.gather(
+                    *[
+                        client.post("/v1/systemone", json={**BODY, "state": state})
+                        for state in ["a", "broken", "overlong", "b"]
+                    ]
+                )
+                assert [r.status_code for r in replies] == [200, 500, 422, 200]
+                assert replies[1].json() == {"detail": "inference failed"}
+                assert engine.batches == [2]
+                assert (await client.get("/ready")).status_code == 200
+                later = await client.post("/v1/systemone", json={**BODY, "state": "later"})
+                assert later.status_code == 200
+                assert later.json()["state"] == "later"
+                await asyncio.wait_for(app.state.batcher.queue.join(), timeout=0.5)
+                assert not app.state.batcher.task.done()
+
+    asyncio.run(scenario())
