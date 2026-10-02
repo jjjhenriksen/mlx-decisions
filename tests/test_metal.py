@@ -253,10 +253,14 @@ def test_benchmark_distinguishes_order_drift_from_cache_parity(rubric_first, mon
     )
     benchmark.main()
     report = json.loads(output.read_text())
+    assert report["complete"] is True
+    assert report["parity_passed"] is True
     assert report["prompt_order"] == ("rubric-first" if rubric_first else "state-first")
     expected = "rubric_first_full_forward" if rubric_first else "official_full_forward"
     assert report["results"][0]["variant"] == expected
     for result in report["results"]:
+        assert len(result["raw_score_samples"]) == 1
+        assert len(result["raw_score_samples"][0]) == 2
         assert result["parity"]["passed"]
         assert result["speedup_vs_full_forward"] > 0
         assert (result["prompt_order_drift_vs_state_first"] is not None) is rubric_first
@@ -282,3 +286,87 @@ def test_prepared_execution_matches_direct_and_does_not_tokenize(monkeypatch):
         assert actual["performance"]["group_requests"] == len(cases)
     with pytest.raises(ValueError, match="every request index"):
         engine.decide_prepared(rows, request_count=len(cases) + 1)
+
+
+def test_benchmark_retains_each_probability_error_and_flip():
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        'benchmark', Path(__file__).parents[1] / 'scripts/benchmark.py'
+    )
+    benchmark = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(benchmark)
+    engine = tiny_engine()
+    rows = engine.prepare(requests())[:1]
+    row = rows[0]
+    key = (row.request, row.key)
+    samples = benchmark.raw_comparison({key: [2.0, 0.0]}, {key: [0.0, 2.0]}, rows)
+    assert samples[0]['decision_flip']
+    assert samples[0]['reference_logits'] == [2.0, 0.0]
+    assert samples[0]['actual_decision'] == 'b'
+    assert max(samples[0]['absolute_probability_errors']) > 0.005
+
+
+def test_benchmark_marks_loader_failure_incomplete(monkeypatch, tmp_path):
+    import importlib.util
+    import json
+    import sys
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        'benchmark', Path(__file__).parents[1] / 'scripts/benchmark.py'
+    )
+    benchmark = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(benchmark)
+    output = tmp_path / 'failed.json'
+    monkeypatch.setattr(sys, 'argv', ['benchmark.py', '--output', str(output)])
+
+    def fail(*args, **kwargs):
+        raise RuntimeError('cannot load checkpoint')
+
+    monkeypatch.setattr(benchmark, 'Engine', fail)
+    with pytest.raises(RuntimeError, match='cannot load'):
+        benchmark.main()
+    report = json.loads(output.read_text())
+    assert report['complete'] is False
+    assert report['phase'] == 'loading'
+    assert report['error']['type'] == 'RuntimeError'
+    assert report['results'] == []
+
+
+def test_benchmark_retains_measured_repeat_before_interruption(monkeypatch, tmp_path):
+    import importlib.util
+    import json
+    import sys
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        'benchmark', Path(__file__).parents[1] / 'scripts/benchmark.py'
+    )
+    benchmark = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(benchmark)
+    engine = tiny_engine()
+    original = engine.raw_scores
+    calls = 0
+
+    def interrupted(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 4:  # reference, warm-up, measured repeat, interrupted repeat
+            raise RuntimeError('measurement interrupted')
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(engine, 'raw_scores', interrupted)
+    monkeypatch.setattr(benchmark, 'Engine', lambda *args, **kwargs: engine)
+    monkeypatch.setattr(benchmark, 'workloads', lambda: {'single': requests()[:1]})
+    output = tmp_path / 'interrupted.json'
+    monkeypatch.setattr(sys, 'argv', ['benchmark.py', '--repeats', '2', '--output', str(output)])
+    with pytest.raises(RuntimeError, match='measurement interrupted'):
+        benchmark.main()
+    report = json.loads(output.read_text())
+    assert report['complete'] is False
+    assert report['error']['type'] == 'RuntimeError'
+    assert len(report['pending_case']['group_wall_ms_samples']) == 1
+    assert len(report['pending_case']['raw_score_samples']) == 1
+    assert report['results'] == []

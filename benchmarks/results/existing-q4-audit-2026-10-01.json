@@ -1,0 +1,52 @@
+[
+  {
+    "file": "q4-state-first-2026-10-01.json",
+    "sha256": "71e7324651dfd808062d4fdec191dd8c235f1ef3d1e3e1c2ade8a1118877d545",
+    "model": "openjev/openjev-MLX-4bit",
+    "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
+    "cases": 30,
+    "failed": [
+      {
+        "workload": "four_questions_shared_state",
+        "variant": "selected_head_batch4",
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.029492199420928955,
+        "decision_flips": 0,
+        "passed": false
+      },
+      {
+        "workload": "four_questions_shared_state",
+        "variant": "prefix_batch4_cold",
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.010957613587379456,
+        "decision_flips": 0,
+        "passed": false
+      },
+      {
+        "workload": "four_questions_shared_state",
+        "variant": "prefix_batch4_warm",
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.010957613587379456,
+        "decision_flips": 0,
+        "passed": false
+      }
+    ]
+  },
+  {
+    "file": "q4-rubric-first-2026-10-01.json",
+    "sha256": "55f03517b937b861ca8d8e7919790d57fafe49f8f4a2df636684c7687dc809a7",
+    "model": "openjev/openjev-MLX-4bit",
+    "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
+    "cases": 30,
+    "failed": [
+      {
+        "workload": "four_questions_shared_state",
+        "variant": "selected_head_batch4",
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.02545565366744995,
+        "decision_flips": 0,
+        "passed": false
+      }
+    ]
+  }
+]

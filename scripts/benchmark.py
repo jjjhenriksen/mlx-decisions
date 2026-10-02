@@ -8,6 +8,7 @@ same workload. Request latency is NOT throughput divided by concurrency.
 
 import argparse
 import json
+import math
 import platform
 import statistics
 import subprocess
@@ -87,6 +88,41 @@ def parity(reference, actual, rows):
     }
 
 
+def raw_comparison(reference, actual, rows):
+    samples = []
+    for row in rows:
+        key, count = (row.request, row.key), len(row.question.options())
+        a, b = reference[key][:count], actual[key][:count]
+        pa, pb = probabilities(a), probabilities(b)
+        options = [key for key, _ in row.question.options()]
+        first = max(range(count), key=a.__getitem__)
+        second = max(range(count), key=b.__getitem__)
+        samples.append(
+            {
+                "request_index": row.request,
+                "question": row.key,
+                "question_type": row.question.type,
+                "options": options,
+                "reference_logits": a,
+                "actual_logits": b,
+                "reference_conditional_probabilities": pa,
+                "actual_conditional_probabilities": pb,
+                "absolute_probability_errors": [abs(x - y) for x, y in zip(pa, pb, strict=True)],
+                "reference_decision": options[first],
+                "actual_decision": options[second],
+                "decision_flip": first != second,
+            }
+        )
+    return samples
+
+
+def save_report(output, report):
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_suffix(output.suffix + ".tmp")
+    temporary.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+    temporary.replace(output)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=MODEL_ID)
@@ -98,7 +134,9 @@ def main():
     ap.add_argument("--fuse-gate-up", action="store_true")
     ap.add_argument("--rubric-first", action="store_true", help="experimental prompt ordering")
     ap.add_argument(
-        "--metal-cache-mib", type=int, default=512,
+        "--metal-cache-mib",
+        type=int,
+        default=512,
         help="process-wide MLX allocator cache budget (not the model or prefix cache)",
     )
     args = ap.parse_args()
@@ -106,12 +144,33 @@ def main():
         ap.error("--repeats must be positive")
     if args.metal_cache_mib < 0:
         ap.error("--metal-cache-mib must be nonnegative")
+    if not math.isfinite(args.probability_atol) or args.probability_atol < 0:
+        ap.error("--probability-atol must be finite and nonnegative")
+    initial = {
+        "model": args.model,
+        "revision": args.revision,
+        "complete": False,
+        "phase": "loading",
+        "results": [],
+        "machine": platform.platform(),
+        "device": mx.device_info(),
+        "experimental_fusion": args.fuse_gate_up,
+        "prompt_order": "rubric-first" if args.rubric_first else "state-first",
+    }
+    save_report(args.output, initial)
     mx.set_cache_limit(args.metal_cache_mib * 1024**2)
     started = time.perf_counter()
-    engine = Engine(args.model, revision=args.revision, rubric_first=args.rubric_first)
+    try:
+        engine = Engine(args.model, revision=args.revision, rubric_first=args.rubric_first)
+    except BaseException as exc:
+        initial["error"] = {"type": type(exc).__name__, "message": str(exc)}
+        save_report(args.output, initial)
+        raise
     loaded = time.perf_counter() - started
     print(json.dumps({"event": "model_loaded", "seconds": loaded}), flush=True)
     report = {
+        "complete": False,
+        "experimental_fusion": args.fuse_gate_up,
         "model": engine.model_id,
         "revision": engine.revision,
         "prompt_order": "rubric-first" if args.rubric_first else "state-first",
@@ -138,6 +197,16 @@ def main():
         )
     except subprocess.CalledProcessError:
         report["git_commit"] = None
+    save_report(args.output, report)
+    try:
+        run_cases(args, engine, report)
+    except BaseException as exc:
+        report["error"] = {"type": type(exc).__name__, "message": str(exc)}
+        save_report(args.output, report)
+        raise
+
+
+def run_cases(args, engine, report):
     cases = workloads()
     if args.workload:
         cases = {k: cases[k] for k in args.workload}
@@ -146,6 +215,8 @@ def main():
     # Reference is collected BEFORE optional fusion, so gate cannot compare a
     # mutated optimized model against itself.
     for name, requests in cases.items():
+        report["phase"] = {"stage": "reference", "workload": name}
+        save_report(args.output, report)
         print(json.dumps({"event": "reference_started", "workload": name}), flush=True)
         rows = engine.prepare(requests)
         references[name] = engine.raw_scores(rows, reference=True)[0]
@@ -180,12 +251,14 @@ def main():
                 json.dumps({"event": "case_started", "workload": name, "variant": label}),
                 flush=True,
             )
+            report["phase"] = {"stage": "measurement", "workload": name, "variant": label}
+            save_report(args.output, report)
             engine.selected_head, engine.prefix_reuse, engine.max_batch_size = (
                 selected,
                 prefix,
                 batch,
             )
-            durations, checks, all_metrics = [], [], []
+            durations, checks, all_metrics, raw_samples = [], [], [], []
             engine.clear_cache()
             # Warm kernels for every shape/variant. This is outside reported times.
             engine.raw_scores(engine.prepare(requests), reference=reference)
@@ -204,7 +277,17 @@ def main():
                 mx.synchronize()
                 durations.append((time.perf_counter() - start) * 1000)
                 checks.append(parity(references[name], actual, rows))
+                raw_samples.append(raw_comparison(references[name], actual, rows))
                 all_metrics.append(metrics)
+                report["pending_case"] = {
+                    "workload": name,
+                    "variant": label,
+                    "group_wall_ms_samples": durations,
+                    "parity_samples": checks,
+                    "raw_score_samples": raw_samples,
+                    "work": all_metrics,
+                }
+                save_report(args.output, report)
             median = statistics.median(durations)
             if reference:
                 baseline_ms = median
@@ -222,6 +305,8 @@ def main():
                 "variant": label,
                 "request_count": len(requests),
                 "question_count": len(rows),
+                "raw_score_samples": raw_samples,
+                "parity_samples": checks,
                 "group_wall_ms_samples": durations,
                 "median_group_wall_ms": median,
                 "requests_per_second": 1000 * len(requests) / median,
@@ -237,8 +322,8 @@ def main():
                 "answers": answers,
             }
             report["results"].append(result)
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            args.output.write_text(json.dumps(report, indent=2) + "\n")
+            report.pop("pending_case", None)
+            save_report(args.output, report)
             print(
                 json.dumps(
                     {
@@ -255,7 +340,11 @@ def main():
                 ),
                 flush=True,
             )
-    if not all(x["parity"]["passed"] for x in report["results"]):
+    report["complete"] = True
+    report["phase"] = "finished"
+    report["parity_passed"] = all(x["parity"]["passed"] for x in report["results"])
+    save_report(args.output, report)
+    if not report["parity_passed"]:
         raise SystemExit("PARITY FAILED: do not promote the failing variants")
 
 

@@ -1,0 +1,1446 @@
+{
+  "complete": true,
+  "experimental_fusion": false,
+  "model": "openjev/openjev-MLX-4bit",
+  "revision": "63aecab0abcba710f38270ddc1061fb2e3d8d143",
+  "prompt_order": "state-first",
+  "parity_reference": "unfused full forward with the selected prompt order",
+  "machine": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "device": {
+    "device_name": "Apple M3 Pro",
+    "max_recommended_working_set_size": 30150672384,
+    "memory_size": 38654705664,
+    "architecture": "applegpu_g15s",
+    "max_buffer_length": 22613000192,
+    "resource_limit": 499000
+  },
+  "load_seconds": 22.5908239580167,
+  "metal_allocator_cache_limit_bytes": 536870912,
+  "versions": {
+    "mlx": "0.32.3",
+    "mlx-lm": "0.32.0",
+    "transformers": "5.18.0",
+    "mlx-decisions": "0.1.0"
+  },
+  "repeats": 1,
+  "probability_atol": 0.005,
+  "timestamp_utc": "2026-10-02T05:06:59Z",
+  "scope": "synthetic correctness/performance smoke, not task accuracy or calibration validation",
+  "results": [
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "official_full_forward",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              17.875
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.0,
+          "max_abs_probability_error": 0.0,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        4018.5331249958836
+      ],
+      "median_group_wall_ms": 4018.5331249958836,
+      "requests_per_second": 0.24884702176021614,
+      "decisions_per_second": 0.9953880870408646,
+      "speedup_vs_full_forward": 1.0,
+      "speedup_vs_official": 1.0,
+      "peak_metal_bytes_last_repeat": 15374927598,
+      "parity": {
+        "max_abs_logit_error": 0.0,
+        "max_abs_probability_error": 0.0,
+        "decision_flips": 0,
+        "passed": true
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 0,
+          "prefix_misses": 0,
+          "prefill_tokens": 303,
+          "scored_rows": 4,
+          "gpu_batches": 4,
+          "batch_sizes": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6371
+        },
+        {
+          "type": "score",
+          "score": 1.921,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0017,
+            "1": 0.0757,
+            "2": 0.9226
+          },
+          "confidence": 0.8814
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    },
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "last_position_full_head",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              17.875
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.0,
+          "max_abs_probability_error": 0.0,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        3777.7416669996455
+      ],
+      "median_group_wall_ms": 3777.7416669996455,
+      "requests_per_second": 0.26470841263061246,
+      "decisions_per_second": 1.0588336505224498,
+      "speedup_vs_full_forward": 1.063739524621195,
+      "speedup_vs_official": 1.063739524621195,
+      "peak_metal_bytes_last_repeat": 15577069194,
+      "parity": {
+        "max_abs_logit_error": 0.0,
+        "max_abs_probability_error": 0.0,
+        "decision_flips": 0,
+        "passed": true
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 0,
+          "prefix_misses": 0,
+          "prefill_tokens": 303,
+          "scored_rows": 4,
+          "gpu_batches": 4,
+          "batch_sizes": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6371
+        },
+        {
+          "type": "score",
+          "score": 1.921,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0017,
+            "1": 0.0757,
+            "2": 0.9226
+          },
+          "confidence": 0.8814
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    },
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "selected_head_serial",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              17.875
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.0,
+          "max_abs_probability_error": 0.0,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        3760.838291986147
+      ],
+      "median_group_wall_ms": 3760.838291986147,
+      "requests_per_second": 0.2658981648136451,
+      "decisions_per_second": 1.0635926592545804,
+      "speedup_vs_full_forward": 1.0685205831792477,
+      "speedup_vs_official": 1.0685205831792477,
+      "peak_metal_bytes_last_repeat": 15577085426,
+      "parity": {
+        "max_abs_logit_error": 0.0,
+        "max_abs_probability_error": 0.0,
+        "decision_flips": 0,
+        "passed": true
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 0,
+          "prefix_misses": 0,
+          "prefill_tokens": 303,
+          "scored_rows": 4,
+          "gpu_batches": 4,
+          "batch_sizes": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6371
+        },
+        {
+          "type": "score",
+          "score": 1.921,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0017,
+            "1": 0.0757,
+            "2": 0.9226
+          },
+          "confidence": 0.8814
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    },
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "selected_head_batch4",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              18.0
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7073095440864563,
+              0.2926904559135437
+            ],
+            "absolute_probability_errors": [
+              0.029492199420928955,
+              0.029492199420928955
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.1875,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999598264694214,
+              1.5067337699292693e-05,
+              2.520985435694456e-05
+            ],
+            "absolute_probability_errors": [
+              1.0728836059570312e-06,
+              1.068130586645566e-06,
+              2.7284841053187847e-11
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.125,
+          "max_abs_probability_error": 0.029492199420928955,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        3490.84495799616
+      ],
+      "median_group_wall_ms": 3490.84495799616,
+      "requests_per_second": 0.28646359607274774,
+      "decisions_per_second": 1.145854384290991,
+      "speedup_vs_full_forward": 1.1511634499237775,
+      "speedup_vs_official": 1.1511634499237775,
+      "peak_metal_bytes_last_repeat": 15926559272,
+      "parity": {
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.029492199420928955,
+        "decision_flips": 0,
+        "passed": false
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 0,
+          "prefix_misses": 0,
+          "prefill_tokens": 303,
+          "scored_rows": 4,
+          "gpu_batches": 3,
+          "batch_sizes": [
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6183
+        },
+        {
+          "type": "score",
+          "score": 1.921,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0017,
+            "1": 0.0757,
+            "2": 0.9226
+          },
+          "confidence": 0.8814
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    },
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "prefix_batch4_cold",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.875,
+              14.4375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998666048049927,
+              4.5393873733701184e-05,
+              8.798300405032933e-05
+            ],
+            "absolute_probability_errors": [
+              9.417533874511719e-06,
+              3.217584890080616e-06,
+              6.236536137294024e-06
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              17.875
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.25,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016351829981431365,
+              0.0866902619600296,
+              0.9116744995117188
+            ],
+            "absolute_probability_errors": [
+              1.961854286491871e-05,
+              0.010957613587379456,
+              0.010938048362731934
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.1875,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999598264694214,
+              1.5067337699292693e-05,
+              2.520985435694456e-05
+            ],
+            "absolute_probability_errors": [
+              1.0728836059570312e-06,
+              1.068130586645566e-06,
+              2.7284841053187847e-11
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.125,
+          "max_abs_probability_error": 0.010957613587379456,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        2887.833499989938
+      ],
+      "median_group_wall_ms": 2887.833499989938,
+      "requests_per_second": 0.34628035169045734,
+      "decisions_per_second": 1.3851214067618294,
+      "speedup_vs_full_forward": 1.3915390638033271,
+      "speedup_vs_official": 1.3915390638033271,
+      "peak_metal_bytes_last_repeat": 15985442404,
+      "parity": {
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.010957613587379456,
+        "decision_flips": 0,
+        "passed": false
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 0,
+          "prefix_misses": 1,
+          "prefill_tokens": 234,
+          "scored_rows": 4,
+          "gpu_batches": 3,
+          "batch_sizes": [
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6371
+        },
+        {
+          "type": "score",
+          "score": 1.91,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0016,
+            "1": 0.0867,
+            "2": 0.9117
+          },
+          "confidence": 0.8651
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    },
+    {
+      "workload": "four_questions_shared_state",
+      "variant": "prefix_batch4_warm",
+      "request_count": 1,
+      "question_count": 4,
+      "raw_score_samples": [
+        [
+          {
+            "request_index": 0,
+            "question": "route",
+            "question_type": "choice",
+            "options": [
+              "billing",
+              "shipping",
+              "technical"
+            ],
+            "reference_logits": [
+              22.375,
+              13.8125,
+              14.375
+            ],
+            "actual_logits": [
+              22.375,
+              13.875,
+              14.4375
+            ],
+            "reference_conditional_probabilities": [
+              0.9998760223388672,
+              4.217628884362057e-05,
+              8.17464679130353e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9998666048049927,
+              4.5393873733701184e-05,
+              8.798300405032933e-05
+            ],
+            "absolute_probability_errors": [
+              9.417533874511719e-06,
+              3.217584890080616e-06,
+              6.236536137294024e-06
+            ],
+            "reference_decision": "billing",
+            "actual_decision": "billing",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "anger",
+            "question_type": "noul",
+            "options": [
+              "yes",
+              "no"
+            ],
+            "reference_logits": [
+              18.75,
+              17.875
+            ],
+            "actual_logits": [
+              18.75,
+              17.875
+            ],
+            "reference_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "actual_conditional_probabilities": [
+              0.7368017435073853,
+              0.26319825649261475
+            ],
+            "absolute_probability_errors": [
+              0.0,
+              0.0
+            ],
+            "reference_decision": "yes",
+            "actual_decision": "yes",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "urgency",
+            "question_type": "score",
+            "options": [
+              "0",
+              "1",
+              "2"
+            ],
+            "reference_logits": [
+              14.875,
+              18.125,
+              20.25
+            ],
+            "actual_logits": [
+              14.875,
+              18.25,
+              20.25
+            ],
+            "reference_conditional_probabilities": [
+              0.0016548015410080552,
+              0.07573264837265015,
+              0.9226125478744507
+            ],
+            "actual_conditional_probabilities": [
+              0.0016351829981431365,
+              0.0866902619600296,
+              0.9116744995117188
+            ],
+            "absolute_probability_errors": [
+              1.961854286491871e-05,
+              0.010957613587379456,
+              0.010938048362731934
+            ],
+            "reference_decision": "2",
+            "actual_decision": "2",
+            "decision_flip": false
+          },
+          {
+            "request_index": 0,
+            "question": "refund",
+            "question_type": "choice",
+            "options": [
+              "refund duplicate",
+              "reship parcel",
+              "reset password"
+            ],
+            "reference_logits": [
+              22.625,
+              13.125,
+              13.625
+            ],
+            "actual_logits": [
+              22.625,
+              13.1875,
+              13.625
+            ],
+            "reference_conditional_probabilities": [
+              0.9999608993530273,
+              1.3999207112647127e-05,
+              2.5209881641785614e-05
+            ],
+            "actual_conditional_probabilities": [
+              0.9999598264694214,
+              1.5067337699292693e-05,
+              2.520985435694456e-05
+            ],
+            "absolute_probability_errors": [
+              1.0728836059570312e-06,
+              1.068130586645566e-06,
+              2.7284841053187847e-11
+            ],
+            "reference_decision": "refund duplicate",
+            "actual_decision": "refund duplicate",
+            "decision_flip": false
+          }
+        ]
+      ],
+      "parity_samples": [
+        {
+          "max_abs_logit_error": 0.125,
+          "max_abs_probability_error": 0.010957613587379456,
+          "decision_flips": 0
+        }
+      ],
+      "group_wall_ms_samples": [
+        2550.4640830040444
+      ],
+      "median_group_wall_ms": 2550.4640830040444,
+      "requests_per_second": 0.3920855057963246,
+      "decisions_per_second": 1.5683420231852985,
+      "speedup_vs_full_forward": 1.575608592873296,
+      "speedup_vs_official": 1.575608592873296,
+      "peak_metal_bytes_last_repeat": 15970275822,
+      "parity": {
+        "max_abs_logit_error": 0.125,
+        "max_abs_probability_error": 0.010957613587379456,
+        "decision_flips": 0,
+        "passed": false
+      },
+      "prompt_order_drift_vs_state_first": null,
+      "work": [
+        {
+          "prefix_hits": 1,
+          "prefix_misses": 0,
+          "prefill_tokens": 211,
+          "scored_rows": 4,
+          "gpu_batches": 3,
+          "batch_sizes": [
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "answers": [
+        {
+          "type": "choice",
+          "choice": "billing",
+          "probabilities": {
+            "billing": 0.9999,
+            "shipping": 0.0,
+            "technical": 0.0001
+          },
+          "confidence": 0.9998
+        },
+        {
+          "type": "noul",
+          "noul": 0.6371
+        },
+        {
+          "type": "score",
+          "score": 1.91,
+          "legend": {
+            "0": "low",
+            "1": "medium",
+            "2": "high"
+          },
+          "probabilities": {
+            "0": 0.0016,
+            "1": 0.0867,
+            "2": 0.9117
+          },
+          "confidence": 0.8651
+        },
+        {
+          "type": "choice",
+          "choice": "refund duplicate",
+          "probabilities": {
+            "refund duplicate": 1.0,
+            "reship parcel": 0.0,
+            "reset password": 0.0
+          },
+          "confidence": 0.9999
+        }
+      ]
+    }
+  ],
+  "git_commit": "ec0c86dbcaf1e028227992c29ed9a9e90d91d0f0",
+  "git_dirty": false,
+  "phase": "finished",
+  "parity_passed": false,
+  "error": {
+    "type": "SystemExit",
+    "message": "PARITY FAILED: do not promote the failing variants"
+  }
+}
