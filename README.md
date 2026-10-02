@@ -160,6 +160,12 @@ uv run python scripts/benchmark.py --fuse-gate-up --repeats 3 \
 uv run python scripts/benchmark_http.py --concurrency 1 2 4 8 --requests 16
 ```
 
+The HTTP benchmark retains every attempted request, including HTTP overload/deadline
+errors and transport failures. Latency percentiles and `requests_per_second` use
+successful responses only; `attempted_requests_per_second`, status/error counts,
+and raw samples expose failed work separately. Reports mark incomplete setup or
+measurement runs, and the command exits nonzero if any measured request fails.
+
 `benchmark.py` fails if any argmax changes or the maximum conditional-probability
 error exceeds 0.005. It records error magnitudes and every timing sample. The gate
 is a small synthetic compatibility check, **not** a held-out accuracy evaluation.
