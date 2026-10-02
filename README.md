@@ -107,7 +107,7 @@ tokenizer boundaries; cached branches still copy both KV and recurrent state.
 Results include `prompt_order` (`state-first` or `rubric-first`).
 
 **State-first remains the default.** Rubric-first changes the training-time prompt
-layout: accuracy and probability calibration are unvalidated. The same readout
+layout: general accuracy and probability calibration are unvalidated. The same readout
 formulas are applied, but that does not establish equivalent calibration. Cached
 tokens still participate in attention. A single `decide` invocation is a fresh
 process; reuse across calls requires a running server or a persistent `Engine`.
@@ -198,6 +198,15 @@ not held-out accuracy/calibration results or evidence of Q4/8-bit equivalence.
 See the [full Q4 validation report](benchmarks/results/q4-validation-2026-10-01.md),
 [raw state-first samples](benchmarks/results/q4-state-first-2026-10-01.json), and
 [raw rubric-first samples](benchmarks/results/q4-rubric-first-2026-10-01.json).
+A separate [held-out Q4 comparison](benchmarks/results/heldout-q4-prompt-order-v1.md)
+evaluated 72 new synthetic policy decisions with unfused full forward in both
+orders. Both scored 72/72 with zero flips, but option probabilities changed by
+up to 0.260214. Rubric-first improved pooled log loss/Brier while worsening the
+binary noul metrics. This easy, small, templated set does not establish general
+calibration, statistical superiority, or 8-bit equivalence. State-first stays
+the default. The [frozen protocol](benchmarks/heldout/README.md) separates this
+held-out set from prompt and threshold tuning and retains all paired samples.
+
 Both checkpoints are now downloaded. The 8-bit full-forward run hit severe memory
 pressure on this machine; no successful 8-bit timing/parity result is claimed.
 The [initial development evidence](benchmarks/results/validation-2026-10-01.json)
