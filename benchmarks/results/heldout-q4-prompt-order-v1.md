@@ -27,7 +27,7 @@ Every one of the six families had 12/12 correct predictions under both orders. T
 
 Rubric-minus-state pooled differences: accuracy 0.0000, log loss -0.003489, Brier -0.001954, and ECE -0.002890. These are descriptive paired differences, not a significance claim. Binary noul log loss and Brier worsened with rubric-first even though accuracy remained perfect.
 
-Largest option-probability change: **0.260214**, on `support-routing-07`, with the same correct winner. State-first assigned the target probability 0.735829; rubric-first assigned 0.996043. The case uses a resolved historical login complaint and a currently missing refund. This demonstrates why unchanged winners alone are insufficient to establish equivalent probability behavior.
+Largest option-probability change: **0.260214**, on `support-routing-07`, with the same correct winner. State-first assigned the target probability 0.735829; rubric-first assigned 0.996043. The case reports both a late shipment and a late refund, explicitly says the customer is not locked out, and requires prioritizing the unresolved payment problem. This demonstrates why unchanged winners alone are insufficient to establish equivalent probability behavior.
 
 ## Limits and interpretation
 
