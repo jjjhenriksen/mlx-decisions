@@ -203,6 +203,16 @@ pressure on this machine; no successful 8-bit timing/parity result is claimed.
 The [initial development evidence](benchmarks/results/validation-2026-10-01.json)
 records the earlier download blocker, not the current Q4 validation state.
 
+A [current pinned 8-bit provision check](benchmarks/results/pinned-8bit-provision-2026-10-01.md)
+confirms all cached shard sizes but blocks a new full run on this 36 GiB Mac:
+the weights plus the documented runtime reserve exceed Metal's recommended
+working set. `scripts/preflight_checkpoint.py` is read-only and does not download
+or load weights. Issue #4 stays open pending a provisioned full 8-bit run.
+The parity harness retains per-repeat candidate logits, option probabilities,
+errors, and flips; `complete` and `parity_passed` distinguish a finished suite
+from a successful gate. Fusion remains a separate experimental arm.
+
+
 ## Research and license
 
 [Research and adaptation matrix](docs/research.md) compares the official helper,
