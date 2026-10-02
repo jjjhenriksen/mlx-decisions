@@ -33,6 +33,31 @@ retained, and their gates recomputed from the per-case recorded pass/fail values
 reported flips. This audit verifies the stored evidence, not a new Q4 performance
 run. We have not filled missing old per-row logits by inventing data.
 
+## Fresh Q4 reproduction of the failed workload
+
+The `four_questions_shared_state` workload was rerun on the full pinned Q4
+checkpoint, six variants under each order, one measured repetition per variant.
+Both commands completed their six cases and exited **1** for failed parity.
+The raw reports record clean source commit
+`ec0c86dbcaf1e028227992c29ed9a9e90d91d0f0`, pinned model/device/version metadata,
+all 48 measured question rows, original reference logits, per-option probability
+errors, and flips. The recorded option errors were recomputed and matched.
+
+| Order | Variant | Maximum probability error | Flips |
+|---|---|---:|---:|
+| state-first | selected_head_batch4 | 0.0294921994 | 0 |
+| state-first | prefix_batch4_cold | 0.0109576136 | 0 |
+| state-first | prefix_batch4_warm | 0.0109576136 | 0 |
+| rubric-first | selected_head_batch4 | 0.0254556537 | 0 |
+
+These reproduce all four prior failures at the unchanged 0.005 gate. This is a
+report-retention check on one workload, not a new complete 60-case performance
+study or substitute for the 8-bit run. Single-sample timings are retained but no
+performance claim is promoted. Fusion was disabled.
+
+[State-first per-row evidence](q4-parity-retention-state-first-2026-10-01.json) and
+[rubric-first per-row evidence](q4-parity-retention-rubric-first-2026-10-01.json).
+
 ## Resume on an adequately provisioned Apple Silicon host
 
 Use enough memory to cover the stored tensors, the explicit runtime reserve,
