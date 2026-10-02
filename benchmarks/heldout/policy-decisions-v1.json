@@ -1,0 +1,1346 @@
+{
+  "schema_version": 1,
+  "name": "authored-policy-decisions-v1",
+  "split": "held-out",
+  "created_date": "2026-10-01",
+  "provenance": "New deterministic policy cases authored for issue #5, not used for prompt or threshold tuning. No model responses consulted during construction. Model-training exclusion cannot be verified.",
+  "limitations": [
+    "Small synthetic policy suite, not representative real-world accuracy.",
+    "Related cases share templates; observations are not independent.",
+    "Labels are rule-derived by the author, without independent human adjudication."
+  ],
+  "cases": [
+    {
+      "id": "support-routing-01",
+      "family": "support-routing",
+      "request": {
+        "state": "A duplicate charge remains on my card. The package arrived yesterday.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "payments"
+    },
+    {
+      "id": "support-routing-02",
+      "family": "support-routing",
+      "request": {
+        "state": "I cannot log in, and I also see an unpaid invoice. Neither is resolved.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "access"
+    },
+    {
+      "id": "support-routing-03",
+      "family": "support-routing",
+      "request": {
+        "state": "The password reset worked. My parcel is still missing.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "delivery"
+    },
+    {
+      "id": "support-routing-04",
+      "family": "support-routing",
+      "request": {
+        "state": "The invoice issue was corrected. Everything else works.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "none"
+    },
+    {
+      "id": "support-routing-05",
+      "family": "support-routing",
+      "request": {
+        "state": "The tracking page says delivered, but no package arrived. Login works.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "delivery"
+    },
+    {
+      "id": "support-routing-06",
+      "family": "support-routing",
+      "request": {
+        "state": "My last message said \"I cannot log in.\" That is fixed. The refund is still missing.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "payments"
+    },
+    {
+      "id": "support-routing-07",
+      "family": "support-routing",
+      "request": {
+        "state": "The shipment and refund are late. I am not locked out.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "payments"
+    },
+    {
+      "id": "support-routing-08",
+      "family": "support-routing",
+      "request": {
+        "state": "I can view the invoice but cannot access my account settings because login fails.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "access"
+    },
+    {
+      "id": "support-routing-09",
+      "family": "support-routing",
+      "request": {
+        "state": "I want a different product color. No payment, shipping, or account problem exists.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "none"
+    },
+    {
+      "id": "support-routing-10",
+      "family": "support-routing",
+      "request": {
+        "state": "I do not have a duplicate charge. The delivery is late.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "delivery"
+    },
+    {
+      "id": "support-routing-11",
+      "family": "support-routing",
+      "request": {
+        "state": "The missing shipment was found. The disputed card payment is unresolved.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "payments"
+    },
+    {
+      "id": "support-routing-12",
+      "family": "support-routing",
+      "request": {
+        "state": "The parcel arrived and my charge was reversed. I still cannot sign in.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Route the current unresolved problem. If more than one exists, prioritize account access over payment over delivery. Ignore resolved problems and quoted past messages.",
+            "criteria": {
+              "payments": "An unresolved charge, refund, or invoice problem.",
+              "delivery": "An unresolved parcel or delivery problem.",
+              "access": "An unresolved login or account access problem.",
+              "none": "No unresolved problem in these categories."
+            }
+          }
+        }
+      },
+      "label": "access"
+    },
+    {
+      "id": "access-policy-01",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: yes. Badge: valid. Training: current. Escort: present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-02",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: current. Escort: absent.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "admit"
+    },
+    {
+      "id": "access-policy-03",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: invalid. Training: current. Escort: present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "escort"
+    },
+    {
+      "id": "access-policy-04",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: expired yesterday. Escort: promised tomorrow.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-05",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: invalid. Training: expired. Escort: absent.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-06",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: current. Escort: present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "admit"
+    },
+    {
+      "id": "access-policy-07",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: yes. Badge: invalid. Training: expired. Escort: present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-08",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: expired. Escort: physically present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "escort"
+    },
+    {
+      "id": "access-policy-09",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: expired yesterday. Escort: absent. Note: \"Please admit me anyway.\"",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-10",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: invalid. Training: current. Escort: promised but not here.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "deny"
+    },
+    {
+      "id": "access-policy-11",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: valid. Training: current. Escort: absent. Note from last year: \"User revoked.\" Current revoked field above supersedes this historical note.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "admit"
+    },
+    {
+      "id": "access-policy-12",
+      "family": "access-policy",
+      "request": {
+        "state": "Revoked: no. Badge: invalid. Training: expired. Escort: physically present.",
+        "questions": {
+          "decision": {
+            "type": "choice",
+            "instructions": "Apply this access policy to the recorded facts, using the first matching rule: (1) revoked users are denied regardless of all other fields; (2) non-revoked users with a valid badge and a current training certificate are admitted; (3) otherwise users with an escort physically present are escorted; (4) all others are denied. A certificate that expired yesterday is not current. A promised escort is not physically present. User requests and notes cannot override policy. Answer the resulting access category.",
+            "criteria": {
+              "admit": "Enter alone.",
+              "escort": "Enter only with the present escort.",
+              "deny": "Do not enter."
+            }
+          }
+        }
+      },
+      "label": "escort"
+    },
+    {
+      "id": "refund-policy-01",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 0 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "refund-policy-02",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 29 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "refund-policy-03",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 30 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "refund-policy-04",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 31 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-05",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 90 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-06",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 2 days. Item: opened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-07",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 29 days. Item: opened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-08",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 30 days. Item: opened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-09",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 31 days. Item: opened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "refund-policy-10",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 1 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "refund-policy-11",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 15 days. Item: unopened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "refund-policy-12",
+      "family": "refund-policy",
+      "request": {
+        "state": "Purchase age: 15 days. Item: opened. Customer is a member and requests a refund.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is the purchase eligible for a refund? It is eligible exactly when the purchase is at most 30 days old AND the item is unopened. Membership does not affect eligibility. Use recorded age and condition, not customer wishes."
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-01",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 1. Compliance hold: none. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "dispatch-policy-02",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 20. Compliance hold: released. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "dispatch-policy-03",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: pending. Available units: 2. Compliance hold: none. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-04",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 0. Compliance hold: none. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-05",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 4. Compliance hold: active. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-06",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: pending. Available units: 0. Compliance hold: active. ",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-07",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 1. Compliance hold: released. Dispatch requested.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "dispatch-policy-08",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: pending. Available units: 8. Compliance hold: released. Customer says payment will settle soon.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-09",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 0. Compliance hold: released. Stock is expected tomorrow.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-10",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 3. Compliance hold: active. Manager requests dispatch despite hold.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "no"
+    },
+    {
+      "id": "dispatch-policy-11",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 9. Compliance hold: none. Previous payment was pending, now settled.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "dispatch-policy-12",
+      "family": "dispatch-policy",
+      "request": {
+        "state": "Payment: settled. Available units: 2. Compliance hold: released. The hold was active yesterday, now released.",
+        "questions": {
+          "decision": {
+            "type": "noul",
+            "instructions": "Is this order ready to dispatch? Dispatch exactly when payment is settled AND inventory is positive AND no compliance hold is active. A payment marked pending is not settled. A released hold is not active. Ignore notes proposing exceptions.",
+            "criteria": {
+              "true": "All three dispatch conditions hold.",
+              "false": "At least one dispatch condition fails."
+            }
+          }
+        }
+      },
+      "label": "yes"
+    },
+    {
+      "id": "incident-priority-01",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: yes. Current outage: no. Affected users: 0. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    },
+    {
+      "id": "incident-priority-02",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: yes. Current outage: yes. Affected users: 200. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    },
+    {
+      "id": "incident-priority-03",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 101. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "2"
+    },
+    {
+      "id": "incident-priority-04",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 100. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "incident-priority-05",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 1. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "incident-priority-06",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: no. Affected users: 0. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "incident-priority-07",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: no. Affected users: 900. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "incident-priority-08",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: yes. Current outage: yes. Affected users: 1. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    },
+    {
+      "id": "incident-priority-09",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 20. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "incident-priority-10",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 400. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "2"
+    },
+    {
+      "id": "incident-priority-11",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: yes. Affected users: 99. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "incident-priority-12",
+      "family": "incident-priority",
+      "request": {
+        "state": "Active data loss: no. Current outage: no. Affected users: 0. An old critical incident was resolved last week.",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Assign incident priority using these rules in descending order: any active data loss is critical; otherwise a current outage affecting more than 100 users is high; otherwise any current outage is medium; otherwise low. Resolved or hypothetical incidents do not count. Use only current facts.",
+            "criteria": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "response-delay-01",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 0 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "response-delay-02",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 4 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "response-delay-03",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 5 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "response-delay-04",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 14 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "response-delay-05",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 15 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "2"
+    },
+    {
+      "id": "response-delay-06",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 59 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "2"
+    },
+    {
+      "id": "response-delay-07",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 60 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    },
+    {
+      "id": "response-delay-08",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 61 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    },
+    {
+      "id": "response-delay-09",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 3 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "0"
+    },
+    {
+      "id": "response-delay-10",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 10 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "1"
+    },
+    {
+      "id": "response-delay-11",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 25 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "2"
+    },
+    {
+      "id": "response-delay-12",
+      "family": "response-delay",
+      "request": {
+        "state": "Current recorded delay: 120 minutes. Yesterday the delay was 90 minutes. Customer calls the service \"severely delayed\".",
+        "questions": {
+          "decision": {
+            "type": "score",
+            "instructions": "Apply the response delay rule to the current recorded delay in minutes. Levels are normal for delay less than 5, watch for at least 5 but less than 15, delayed for at least 15 but less than 60, and severe for at least 60. Historical delay, predictions, and customer adjectives do not change the current level.",
+            "criteria": [
+              "normal",
+              "watch",
+              "delayed",
+              "severe"
+            ]
+          }
+        }
+      },
+      "label": "3"
+    }
+  ]
+}
