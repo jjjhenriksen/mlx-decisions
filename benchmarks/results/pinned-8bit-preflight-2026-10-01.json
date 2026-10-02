@@ -1,0 +1,99 @@
+{
+  "timestamp_utc": "2026-10-02T05:04:49Z",
+  "model": "openjev/openjev-MLX",
+  "revision": "a9dcc20aa827a6c7eae478f6ebb3b255bb135451",
+  "snapshot": "/Users/jacquelinehenriksen/.cache/huggingface/hub/models--openjev--openjev-MLX/snapshots/a9dcc20aa827a6c7eae478f6ebb3b255bb135451",
+  "machine": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine_model": {
+    "exit_code": 0,
+    "stdout": "Mac15,7",
+    "stderr": ""
+  },
+  "physical_memory": {
+    "exit_code": 0,
+    "stdout": "38654705664",
+    "stderr": ""
+  },
+  "memory_pressure": {
+    "exit_code": 0,
+    "stdout": "The system has 38654705664 (2359296 pages with a page size of 16384).\nSystem-wide memory free percentage: 78%",
+    "stderr": ""
+  },
+  "vm_stat": {
+    "exit_code": 0,
+    "stdout": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                   974704.\nPages active:                                 417843.\nPages inactive:                               410563.\nPages speculative:                              7250.\nPages throttled:                                   0.\nPages wired down:                             226353.\nPages purgeable:                                 833.\n\"Translation faults\":                     1703647778.\nPages copy-on-write:                        56201482.\nPages zero filled:                        4214100037.\nPages reactivated:                          81747528.\nPages purged:                               32492347.\nFile-backed pages:                            287410.\nAnonymous pages:                              548246.\nPages stored in compressor:                  1291385.\nPages occupied by compressor:                 266966.\nDecompressions:                             74817612.\nCompressions:                              104370152.\nPageins:                                    61111906.\nPageouts:                                    2565071.\nSwapins:                                     1659743.\nSwapouts:                                    3808148.",
+    "stderr": ""
+  },
+  "ollama_residency": {
+    "exit_code": 0,
+    "stdout": "NAME    ID    SIZE    PROCESSOR    CONTEXT    UNTIL",
+    "stderr": ""
+  },
+  "shards": [
+    {
+      "file": "model-00001-of-00006.safetensors",
+      "expected_bytes": 5305469335,
+      "present_bytes": 5305469335,
+      "size_matches": true
+    },
+    {
+      "file": "model-00002-of-00006.safetensors",
+      "expected_bytes": 5354102610,
+      "present_bytes": 5354102610,
+      "size_matches": true
+    },
+    {
+      "file": "model-00003-of-00006.safetensors",
+      "expected_bytes": 5337392976,
+      "present_bytes": 5337392976,
+      "size_matches": true
+    },
+    {
+      "file": "model-00004-of-00006.safetensors",
+      "expected_bytes": 5292847182,
+      "present_bytes": 5292847182,
+      "size_matches": true
+    },
+    {
+      "file": "model-00005-of-00006.safetensors",
+      "expected_bytes": 5354102641,
+      "present_bytes": 5354102641,
+      "size_matches": true
+    },
+    {
+      "file": "model-00006-of-00006.safetensors",
+      "expected_bytes": 1935805821,
+      "present_bytes": 1935805821,
+      "size_matches": true
+    }
+  ],
+  "metadata_errors": [],
+  "runtime_reserve_bytes": 4294967296,
+  "runtime_reserve_basis": "Conservative 4 GiB default planning allowance for full-forward output, activations, KV/SSM state, allocator, and other runtime allocations; not measured peak evidence.",
+  "fusion": "Not loaded or tested; experimental arm remains separate.",
+  "verification_boundary": "Read-only cached shard size/provision check. No download, load, inference, or tensor checksum verification; ready means eligible for a run, not validated parity or performance.",
+  "storage": {
+    "total_bytes": 994631127040,
+    "used_bytes": 964187860992,
+    "writable_free_bytes": 30443266048
+  },
+  "quantization": {
+    "group_size": 64,
+    "bits": 8,
+    "mode": "affine"
+  },
+  "tensor_bytes": 28579478528,
+  "device": {
+    "device_name": "Apple M3 Pro",
+    "max_recommended_working_set_size": 30150672384,
+    "memory_size": 38654705664,
+    "architecture": "applegpu_g15s",
+    "max_buffer_length": 22613000192,
+    "resource_limit": 499000
+  },
+  "missing_download_budget_bytes": 0,
+  "blockers": [
+    "Tensor bytes plus runtime reserve exceed the recommended Metal working set."
+  ],
+  "status": "blocked"
+}
