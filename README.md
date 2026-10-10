@@ -33,6 +33,19 @@ uv run mlx-decisions decide benchmarks/example.json
 uv run mlx-decisions serve --port 3000
 ```
 
+Preview a request before loading weights:
+
+```sh
+uv run mlx-decisions inspect benchmarks/example.json
+uv run mlx-decisions --rubric-first inspect benchmarks/example.json
+```
+
+`inspect` validates the request and prints each exact text prompt with its
+option-letter mapping as JSON. It imports no inference engine, downloads no
+weights, and makes no model calls. This checks the request/prompt contract only;
+it does not tokenize the prompt, estimate GPU memory, or establish decision
+quality or parity. The output contains the supplied state and instructions.
+
 The download is pinned to `openjev/openjev-MLX` revision
 `a9dcc20aa827a6c7eae478f6ebb3b255bb135451`. Weights stay in the Hugging Face cache,
 not in Git. `--model /local/checkpoint` is also supported (local provenance is

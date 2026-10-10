@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .protocol import MODEL_ID, MODEL_REVISION, DecisionRequest
+from .protocol import LETTERS, MODEL_ID, MODEL_REVISION, DecisionRequest
 
 
 def main():
@@ -26,6 +26,8 @@ def main():
     sub.add_parser("download", help="download the pinned model without loading it")
     decide = sub.add_parser("decide")
     decide.add_argument("request", type=Path)
+    inspect = sub.add_parser("inspect", help="validate a request and print prompts without a model")
+    inspect.add_argument("request", type=Path)
     serve = sub.add_parser("serve")
     serve.add_argument("--port", type=int, default=3000)
     serve.add_argument("--queue-size", type=int, default=32)
@@ -35,6 +37,30 @@ def main():
         from huggingface_hub import snapshot_download
 
         print(snapshot_download(args.model, revision=args.revision))
+        return
+    if args.command in ("decide", "inspect"):
+        try:
+            request = DecisionRequest.model_validate_json(args.request.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            parser.error(f"Cannot read decision request {args.request}: {error}")
+    if args.command == "inspect":
+        state = request.state_text()
+        report = {
+            "prompt_order": "rubric-first" if args.rubric_first else "state-first",
+            "question_count": len(request.questions),
+            "questions": {
+                name: {
+                    "type": question.type,
+                    "prompt": question.prompt(state, rubric_first=args.rubric_first),
+                    "options": [
+                        {"letter": LETTERS[i], "label": label, "description": description}
+                        for i, (label, description) in enumerate(question.options())
+                    ],
+                }
+                for name, question in request.questions.items()
+            },
+        }
+        print(json.dumps(report, indent=2, ensure_ascii=False))
         return
     from .engine import Engine
 
@@ -62,7 +88,6 @@ def main():
             workers=1,
         )
     else:
-        request = DecisionRequest.model_validate_json(args.request.read_text())
         print(json.dumps(factory().decide(request), indent=2))
 
 
